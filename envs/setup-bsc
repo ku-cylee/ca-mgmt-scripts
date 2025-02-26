@@ -6,16 +6,21 @@ TARBALL_URL=https://github.com/B-Lang-org/bsc/releases/download/2024.07/bsc-2024
 TARBALL_BASENAME=$(basename $TARBALL_URL)
 BSC_DIRNAME=$(echo $TARBALL_BASENAME | sed s/\.tar\.gz//)
 
-# Abort if non-root user
-if [ "$(id -u)" -ne 0 ]; then
-    echo -e "\033[91mERR:\033[0m A \033[1mroot privilege\033[0m is required to run this script." >&2
-    exit 1
-fi
+function echo_error {
+    echo -e "\033[91mERR:\033[0m $1"
+    return 0
+}
 
 function echo_progress {
     echo -e "\033[94mProgress:\033[0m $1"
     return 0
 }
+
+# Abort if non-root user
+if [ "$(id -u)" -ne 0 ]; then
+    echo_error "A \033[1mroot privilege\033[0m is required to run this script." >&2
+    exit 1
+fi
 
 echo_progress "Download and extract bsc compiler"
 mkdir -p tmp/
@@ -34,4 +39,4 @@ echo "  PATH=\"$SHARED_DIR/bsc/bin:\$PATH\"" >> /etc/profile
 echo "fi" >> /etc/profile
 
 echo_progress "Install necessary packages"
-apt install -y gcc make tree tcl
+apt install -y gcc g++ make tree tcl
