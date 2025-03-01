@@ -1,0 +1,62 @@
+#!/bin/bash
+
+BASE_DIR=/home/ta
+
+function echo_error {
+    echo -e "\033[91mERR:\033[0m $1"
+    return 0
+}
+
+function echo_progress {
+    echo -e "\033[94mProgress:\033[0m $1"
+    return 0
+}
+
+# Abort if non-root user
+if [ "$(id -u)" -ne 0 ]; then
+    echo_error "A \033[1mroot privilege\033[0m is required to run this script." >&2
+    exit 1
+fi
+
+# Argument check
+if [ -z "$2" ]; then
+    echo_error "Specify \033[1musername and secret key\033[0m of user to add." >&2
+    exit 1
+fi
+
+# # TA group check
+if [ -z "$(getent group ta)" ]; then
+    echo_error "Group \033[1mta\033[0m does not exist. Execute \033[1maccounts/setup-ta\033[0m in advance."
+    exit 1
+fi
+
+# TA directory check
+if ! [ -d $BASE_DIR ]; then
+    echo_error "Directory \033[1m/home/ta\033[0m does not exist. Execute \033[1maccounts/setup-ta\033[0m in advance."
+    exit 1
+fi
+
+USERNAME=$1
+SECRET_KEY=$2
+HOME_DIR=$BASE_DIR/$USERNAME
+PROFILE_DIR=$HOME_DIR/.profile
+
+if ! [ -z "$(id $USERNAME 2> /dev/null)" ]; then
+    echo_error "User \033[1m$USERNAME\033[0m already exists."
+    exit 1
+fi
+
+echo_progress "Create user account"
+useradd -m -s /bin/bash -d $HOME_DIR $USERNAME
+usermod -g ta $USERNAME
+delgroup $USERNAME
+chmod 700 $HOME_DIR
+
+echo_progress "Set environment variables"
+echo "" >> $PROFILE_DIR
+echo "export CA_USERNAME=$USERNAME" >> $PROFILE_DIR
+echo "export CA_SECRET_KEY=$SECRET_KEY" >> $PROFILE_DIR
+
+echo_progress "Reset user password"
+echo "$USERNAME:${USERNAME}pw123123" | chpasswd
+passwd $USERNAME -e
