@@ -30,5 +30,5 @@ if [ -z "$(id $USERNAME 2> /dev/null)" ]; then
 fi
 
 echo_progress "Reset user password"
-echo "$USERNAME:${USERNAME}pw123123" | chpasswd
+echo "$USERNAME:ca${USERNAME}pw" | chpasswd
 passwd $USERNAME -e
