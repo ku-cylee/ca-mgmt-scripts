@@ -1,0 +1,36 @@
+#!/bin/bash
+
+BASE_DIR=/home/ta
+
+function echo_error {
+    echo -e "\033[91mERR:\033[0m $1"
+    return 0
+}
+
+function echo_progress {
+    echo -e "\033[94mProgress:\033[0m $1"
+    return 0
+}
+
+# Abort if non-root user
+if [ "$(id -u)" -ne 0 ]; then
+    echo_error "A \033[1mroot privilege\033[0m is required to run this script." >&2
+    exit 1
+fi
+
+# Argument check
+if [ -z "$1" ]; then
+    echo_error "Provide \033[1musername\033[0m of user to reset password." >&2
+    exit 1
+fi
+
+USERNAME=$1
+
+if [ -z "$(id $USERNAME 2> /dev/null)" ]; then
+    echo_error "User \033[1m$USERNAME\033[0m does not exist."
+    exit 1
+fi
+
+echo_progress "Reset user password"
+echo "$USERNAME:${USERNAME}pw123123" | chpasswd
+passwd $USERNAME -e

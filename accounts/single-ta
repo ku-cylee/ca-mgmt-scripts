@@ -24,7 +24,7 @@ if [ -z "$2" ]; then
     exit 1
 fi
 
-# # TA group check
+# TA group check
 if [ -z "$(getent group ta)" ]; then
     echo_error "Group \033[1mta\033[0m does not exist. Execute \033[1maccounts/setup-ta\033[0m in advance."
     exit 1
@@ -57,6 +57,4 @@ echo "" >> $PROFILE_DIR
 echo "export CA_USERNAME=$USERNAME" >> $PROFILE_DIR
 echo "export CA_SECRET_KEY=$SECRET_KEY" >> $PROFILE_DIR
 
-echo_progress "Reset user password"
-echo "$USERNAME:${USERNAME}pw123123" | chpasswd
-passwd $USERNAME -e
+./accounts/reset-ta-pass "$USERNAME"
