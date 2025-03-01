@@ -20,7 +20,7 @@ fi
 
 # Argument check
 if [ -z "$2" ]; then
-    echo_error "Specify \033[1musername and secret key\033[0m of user to add." >&2
+    echo_error "Provide \033[1musername and secret key\033[0m of user to add." >&2
     exit 1
 fi
 

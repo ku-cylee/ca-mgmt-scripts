@@ -25,6 +25,13 @@ fi
 
 INPUT_FILE_PATH=$1
 
+if [ -z "$(getent group ta)" ]; then
+    echo_progress "Create TA group"
+    groupadd ta
+fi
+
+usermod -aG ta ca-admin
+
 if ! [ -d "$BASE_DIR" ]; then
     echo_progress "Create TA base directory"
     mkdir $BASE_DIR
@@ -37,7 +44,7 @@ cat $INPUT_FILE_PATH | while read LINE; do
     if [[ "$LINE" =~ ([a-z0-9-]+),([a-z0-9]+) ]]; then
         USERNAME=${BASH_REMATCH[1]}
         SECRET_KEY=${BASH_REMATCH[2]}
-        ./accounts/single-ta "$USERNAME" "$SERCRET_KEY"
+        ./accounts/single-ta "$USERNAME" "$SECRET_KEY"
     else
         echo_error "Invalid line \033[4m\"$LINE\"\033[0m detected... Skipping."
     fi
