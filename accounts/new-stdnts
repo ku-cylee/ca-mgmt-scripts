@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+
+import os
+import sys
+
+def print_error(text):
+    print(f'\033[91mERR:\033[0m {text}')
+
+def main():
+    older_stdnt_list_path = sys.argv[1]
+    newer_stdnt_list_path = sys.argv[2]
+
+    if not os.path.isfile(older_stdnt_list_path):
+        return print_error(f'File \033[1m{older_stdnt_list_path}\033[0m does not exist.')
+        return
+    
+    if not os.path.isfile(newer_stdnt_list_path):
+        return print_error(f'File \033[1m{newer_stdnt_list_path}\033[0m does not exist.')
+
+    with open(older_stdnt_list_path) as f:
+        older_list = set(f.read().strip().split('\n'))
+
+    with open(newer_stdnt_list_path) as f:
+        newer_list = set(f.read().strip().split('\n'))
+
+    diff = newer_list.difference(older_list)
+    print('\n'.join(diff))
+
+
+if len(sys.argv) < 3:
+    print_error('Provide \033[1molder and newer students list paths\033[0m.')
+else:
+    main()
+
