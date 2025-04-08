@@ -1,0 +1,27 @@
+#!/bin/bash
+
+BASE_DIR=/home/stdnt
+
+function echo_error {
+    echo -e "\033[91mERR:\033[0m $1"
+    return 0
+}
+
+function echo_progress {
+    echo -e "\033[94mProgress:\033[0m $1"
+    return 0
+}
+
+cat $1 | while read LINE; do
+    echo_progress "Setting student \033[4m$USERNAME\033[0m"
+    if [[ "$LINE" =~ ([a-z0-9-]+),([0-9]+) ]]; then
+        USERNAME=${BASH_REMATCH[1]}
+        PORT=${BASH_REMATCH[2]}
+
+        PROFILE_DIR=$BASE_DIR/$USERNAME/.profile
+
+        echo "export BOMBLAB_VM_PORT=$PORT" >> $PROFILE_DIR
+    else
+        echo_error "Invalid line \033[4m\"$LINE\"\033[0m detected... Skipping."
+    fi
+done
