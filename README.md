@@ -242,14 +242,19 @@ hejung,0b3e31e4bf952002ed637ea52693d20b
 
 #### 계정 등록
 * 앞의 서버, 클라이언트 설정이 완료되고, 서버가 켜져있어야 함.
-* TA 계정은 `caadmin ta <data-file-path>`로 추가
-* 학생 계정은 `caadmin stdnt <data-file-path>`로 추가
-* 예: `caadmin ta ./tmp/tas.secret.txt`
+* TA 계정은 `caadmin ta add <data-file-path>`로 추가
+* 학생 계정은 `caadmin stdnt add <data-file-path>`로 추가
+* 예: `caadmin ta add ./tmp/tas.secret.txt`
 
 ### 계정 삭제
 * `./accounts/del-stdnts`는 모든 학생 계정을 삭제함 (종강 시 사용)
 * `./accounts/del-tas`는 모든 조교 계정을 삭제함
 * 개개인 계정 삭제 스크립트는 없음 (리눅스 명령어로 삭제하고, 해당 계정의 홈 디렉토리를 지워주면 됨.)
+* 제출 서버에서 계정 삭제
+    - `caadmin ta delete <username>`
+    - `caadmin stdnt delete <username>`
+    - 종강 및 서버 폐쇄 시에는 굳이 하지 않아도 됨. 수강취소생에 한하여 진행
+    - 주의: 이미 삭제한 사용자는 재등록이 불가능함. 재등록이 필요하다면 DB를 직접 열어 해당 row를 찾아 직접 삭제.
 
 ### 계정 비밀번호 초기화
 * TA나 학생으로부터 계정 비밀번호 초기화 요청을 받았을 때 실행.
